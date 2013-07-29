@@ -1,0 +1,20 @@
+name: Toybox
+main: com.mctoybox.plugin.MainClass
+version: 1
+depend: [Spout]
+author: Sir_Speshkitty
+authors: [I_Hunta_x, OtakuDragon, Huggers]
+commands:
+  cape:
+    description: Cape management commands
+    usage: |
+      /<command> set <cape> [player] [override]
+      /<command> list [player]
+      /<command> listall [player]
+      /<command> grant <cape> <player>
+      /<command> deny <cape> <player>
+  class:
+    description: The base command for all class functions
+    usage: |
+      /<command> set <class> [player]
+      /<command> list
