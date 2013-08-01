@@ -10,6 +10,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 import com.mctoybox.toybox.classes.ClassBase;
 import com.mctoybox.toybox.classes.ClassTypes;
 import com.mctoybox.toybox.classes.ClassTypes.Type;
+import com.mctoybox.toybox.util.Message;
 
 public class Commands {
 	private MainClass mainClass;
@@ -109,7 +110,7 @@ public class Commands {
 				return;
 			}
 			if (args.length == 2 && !(sender instanceof SpoutPlayer)) {
-				sender.sendMessage(ChatColor.RED + "You need to specify a player!");
+				Message.sendMessage(sender, Message.SPECIFY_PLAYER);
 				sender.sendMessage(ChatColor.RED + mainClass.getCommand("class").getUsage());
 				return;
 			}

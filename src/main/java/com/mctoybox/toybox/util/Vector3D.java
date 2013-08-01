@@ -1,8 +1,6 @@
 package com.mctoybox.toybox.util;
 
 /*
- * Attack hidden players
- *
  * Copyright 2012 Kristian S. Stangeland (Comphenix)
  *
  * This library is free software; you can redistribute it and/or

@@ -2,7 +2,6 @@ package com.mctoybox.toybox.classes;
 
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -20,6 +19,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 import com.mctoybox.toybox.MainClass;
 import com.mctoybox.toybox.Permissions;
 import com.mctoybox.toybox.util.ItemChecker;
+import com.mctoybox.toybox.util.Message;
 import com.mctoybox.toybox.util.Recipes;
 
 public class Alchemist extends ClassBase {
@@ -53,15 +53,14 @@ public class Alchemist extends ClassBase {
 		SpoutPlayer player = event.getPlayer();
 		if (!event.getScreenType().equals(ScreenType.BREWING_STAND_INVENTORY))
 			return;
-		if (!mainClass.playerClasses.getSecondaryClass(player).equals(classRef)) {
+		if (!classRef.equals(mainClass.playerClasses.getSecondaryClass(player))) {
 			event.setCancelled(true);
-			player.sendMessage(ChatColor.RED + "Only an alchemist can use brewing stands!");
+			Message.sendMessage(player, Message.CLASS_ALCHEMIST_ONLY_BREWING_STAND);
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-		mainClass.debugOutput("PlayerItemConsumeEvent triggered in Alchemist.java");
 		SpoutPlayer player = (SpoutPlayer) event.getPlayer();
 		ItemStack item = event.getItem();
 		if (item == null)
@@ -70,14 +69,11 @@ public class Alchemist extends ClassBase {
 		if (!item.getType().equals(org.bukkit.Material.POTION))
 			return;
 		
-		mainClass.debugOutput("Item consumed is a potion");
-		
-		if (!ClassTypes.ALCHEMIST.equals(mainClass.playerClasses.getSecondaryClass(player)))
+		if (!classRef.equals(mainClass.playerClasses.getSecondaryClass(player)))
 			return;
 		// If the player is not an alchemist, the potion effect is applied as
 		// normal
 		
-		mainClass.debugOutput("Player involved is an alchemist");
 		event.setCancelled(true);
 		
 		Potion potion = Potion.fromItemStack(item);
@@ -98,7 +94,7 @@ public class Alchemist extends ClassBase {
 			
 			PotionEffect toApply = new PotionEffect(effectType, (int) (duration * 1.5) * 20, potion.getLevel());
 			player.addPotionEffect(toApply);
-			player.sendMessage("Your knowledge of alchemy makes your potion last longer!");
+			Message.sendMessage(player, Message.CLASS_ALCHEMIST_BOOST_MESSAGE);
 		}
 		
 	}
@@ -118,7 +114,7 @@ public class Alchemist extends ClassBase {
 				AlchemistRecipe = true;
 				if (!ClassTypes.ALCHEMIST.equals(mainClass.playerClasses.getSecondaryClass(player))) {
 					event.setCancelled(true);
-					player.sendMessage(ChatColor.RED + "Only an alchemist can transmute things!");
+					Message.sendMessage(player, Message.CLASS_ALCHEMIST_ONLY_TRANSMUTE);
 				}
 			}
 		}
