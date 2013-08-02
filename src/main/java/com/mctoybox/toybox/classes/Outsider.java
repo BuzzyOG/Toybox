@@ -1,7 +1,7 @@
 package com.mctoybox.toybox.classes;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.Permissions;
+import com.mctoybox.toybox.util.Permissions;
 
 public class Outsider extends ClassBase {
 	

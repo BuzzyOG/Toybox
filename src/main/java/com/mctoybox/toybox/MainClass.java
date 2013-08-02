@@ -28,6 +28,7 @@ import com.mctoybox.toybox.listeners.PlayerMove;
 import com.mctoybox.toybox.listeners.SpoutCraftEnable;
 import com.mctoybox.toybox.util.ClassHolder;
 import com.mctoybox.toybox.util.ExtendedHashMap;
+import com.mctoybox.toybox.util.Permissions;
 
 public class MainClass extends JavaPlugin {
 	

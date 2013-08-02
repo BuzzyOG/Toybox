@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.Permissions;
 import com.mctoybox.toybox.util.Message;
+import com.mctoybox.toybox.util.Permissions;
 
 public class Archer extends ClassBase {
 	

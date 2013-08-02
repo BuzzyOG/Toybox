@@ -5,8 +5,15 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 public enum ClassTypes {
-	OUTSIDER(0, "Outsider", Type.PRIMARY), ALCHEMIST(1, "Alchemist", Type.SECONDARY), ARCHER(2, "Archer", Type.PRIMARY), COOK(3, "Cook", Type.SECONDARY), ENCHANTER(4, "Enchanter", Type.SECONDARY), FARMER(
-			5, "Farmer", Type.PRIMARY), LUMBERJACK(6, "Lumberjack", Type.PRIMARY), OREWORKER(7, "Oreworker", Type.PRIMARY), WARRIOR(8, "Warrior", Type.PRIMARY);
+	OUTSIDER(0, "Outsider", Type.PRIMARY),
+	ALCHEMIST(1, "Alchemist", Type.SECONDARY),
+	ARCHER(2, "Archer", Type.PRIMARY),
+	COOK(3, "Cook", Type.SECONDARY),
+	ENCHANTER(4, "Enchanter", Type.SECONDARY),
+	FARMER(5, "Farmer", Type.PRIMARY),
+	LUMBERJACK(6, "Lumberjack", Type.PRIMARY),
+	OREWORKER(7, "Oreworker", Type.PRIMARY),
+	WARRIOR(8, "Warrior", Type.PRIMARY);
 	
 	private int number;
 	private String name;
@@ -42,7 +49,8 @@ public enum ClassTypes {
 	}
 	
 	public enum Type {
-		PRIMARY, SECONDARY
+		PRIMARY,
+		SECONDARY
 	}
 	
 	static {

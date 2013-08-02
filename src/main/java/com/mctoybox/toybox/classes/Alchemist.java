@@ -17,9 +17,10 @@ import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.Permissions;
+import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
 import com.mctoybox.toybox.util.ItemChecker;
 import com.mctoybox.toybox.util.Message;
+import com.mctoybox.toybox.util.Permissions;
 import com.mctoybox.toybox.util.Recipes;
 
 public class Alchemist extends ClassBase {
@@ -123,5 +124,15 @@ public class Alchemist extends ClassBase {
 			// player.getInventory().addItem(new SpoutItemStack(catalyst, 1));
 		}
 		
+	}
+	
+	@Override
+	public void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException {
+		if (!player.hasPermission(Permissions.CLASSES_ALCHEMIST)) {
+			throw new PlayerNotAllowedClassException();
+		}
+		
+		mainClass.playerClasses.setSecondaryClass(player.getName(), classRef);
+		mainClass.getConfig().set(player.getName() + ".SecondaryClass", classRef.getName());
 	}
 }

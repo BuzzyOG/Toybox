@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.Permissions;
+import com.mctoybox.toybox.util.Permissions;
 
 public class Warrior extends ClassBase {
 	

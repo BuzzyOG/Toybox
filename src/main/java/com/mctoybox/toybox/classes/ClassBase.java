@@ -2,10 +2,12 @@ package com.mctoybox.toybox.classes;
 
 import org.bukkit.event.Listener;
 import org.bukkit.permissions.Permission;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
+import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
 
-public class ClassBase implements Listener {
+public abstract class ClassBase implements Listener {
 	protected MainClass mainClass;
 	protected String className;
 	protected ClassTypes classRef;
@@ -29,4 +31,6 @@ public class ClassBase implements Listener {
 	public Permission getPermRequired() {
 		return permRequired;
 	}
+	
+	public abstract void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException;
 }
