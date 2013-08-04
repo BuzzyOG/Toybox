@@ -4,24 +4,24 @@ import java.util.HashMap;
 
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import com.mctoybox.toybox.classes.ClassTypes;
+import com.mctoybox.toybox.classes.ClassType;
 
 public class ExtendedHashMap<T, V> extends HashMap<String, ClassHolder> {
 	private static final long serialVersionUID = 1L;
 	
-	public ClassTypes getPrimaryClass(String player) {
+	public ClassType getPrimaryClass(String player) {
 		return get(player).getPrimary();
 	}
 	
-	public ClassTypes getPrimaryClass(SpoutPlayer player) {
+	public ClassType getPrimaryClass(SpoutPlayer player) {
 		return get(player.getName()).getPrimary();
 	}
 	
-	public ClassTypes getSecondaryClass(String player) {
+	public ClassType getSecondaryClass(String player) {
 		return get(player).getSecondary();
 	}
 	
-	public ClassTypes getSecondaryClass(SpoutPlayer player) {
+	public ClassType getSecondaryClass(SpoutPlayer player) {
 		return get(player.getName()).getSecondary();
 	}
 	
@@ -29,22 +29,22 @@ public class ExtendedHashMap<T, V> extends HashMap<String, ClassHolder> {
 		return get(player);
 	}
 	
-	public void setPrimaryClass(String player, ClassTypes primaryClass) {
+	public void setPrimaryClass(String player, ClassType primaryClass) {
 		setAllClasses(player, primaryClass, getSecondaryClass(player));
 	}
 	
-	public void setSecondaryClass(String player, ClassTypes secondaryClass) {
+	public void setSecondaryClass(String player, ClassType secondaryClass) {
 		setAllClasses(player, getPrimaryClass(player), secondaryClass);
 	}
 	
-	public void setEitherClass(String player, ClassTypes eitherClass) {
-		if (eitherClass.getType().equals(ClassTypes.Type.PRIMARY))
+	public void setEitherClass(String player, ClassType eitherClass) {
+		if (eitherClass.getType().equals(ClassType.Type.PRIMARY))
 			setPrimaryClass(player, eitherClass);
 		else
 			setSecondaryClass(player, eitherClass);
 	}
 	
-	public void setAllClasses(String player, ClassTypes primaryClass, ClassTypes secondaryClass) {
+	public void setAllClasses(String player, ClassType primaryClass, ClassType secondaryClass) {
 		put(player, new ClassHolder(primaryClass, secondaryClass));
 	}
 	

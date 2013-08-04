@@ -7,9 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import com.mctoybox.toybox.classes.ClassBase;
-import com.mctoybox.toybox.classes.ClassTypes;
-import com.mctoybox.toybox.classes.ClassTypes.Type;
+import com.mctoybox.toybox.classes.ClassType;
 import com.mctoybox.toybox.util.Message;
 
 public class Commands {
@@ -115,7 +113,7 @@ public class Commands {
 				return;
 			}
 			
-			ClassTypes newClass = ClassTypes.getByName(args[0]);
+			ClassType newClass = ClassType.getByName(args[0]);
 			if (newClass == null) {
 				sender.sendMessage(ChatColor.RED + "That class could not be found!");
 				return;
@@ -147,14 +145,14 @@ public class Commands {
 		public void ListClasses(CommandSender sender, String[] args) {
 			// Command to get here is in the form: /class list
 			String primary = "", secondary = "";
-			for (ClassBase cb : mainClass.ClassList) {
-				if (cb.getClassRef().getType().equals(Type.PRIMARY)) {
-					primary += cb.getName() + ", ";
-				}
-				else {
-					secondary += cb.getName() + ", ";
-				}
-			}
+			// for (ClassBase cb : mainClass.ClassList) {
+			// if (cb..getType().equals(Type.PRIMARY)) {
+			// primary += cb.getName() + ", ";
+			// }
+			// else {
+			// secondary += cb.getName() + ", ";
+			// }
+			// }
 			sender.sendMessage("Class Listing:");
 			sender.sendMessage("Primary: " + primary.substring(0, primary.length() - 2));
 			sender.sendMessage("Secondary: " + secondary.substring(0, secondary.length() - 2));

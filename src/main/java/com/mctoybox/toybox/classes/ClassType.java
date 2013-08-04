@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-public enum ClassTypes {
+public enum ClassType {
 	OUTSIDER(0, "Outsider", Type.PRIMARY),
 	ALCHEMIST(1, "Alchemist", Type.SECONDARY),
 	ARCHER(2, "Archer", Type.PRIMARY),
@@ -19,10 +19,10 @@ public enum ClassTypes {
 	private String name;
 	private Type type;
 	
-	private final static Map<Integer, ClassTypes> BY_ID = Maps.newHashMap();
-	private final static Map<String, ClassTypes> BY_NAME = Maps.newHashMap();
+	private final static Map<Integer, ClassType> BY_ID = Maps.newHashMap();
+	private final static Map<String, ClassType> BY_NAME = Maps.newHashMap();
 	
-	private ClassTypes(int number, String name, Type type) {
+	private ClassType(int number, String name, Type type) {
 		this.number = number;
 		this.name = name;
 		this.type = type;
@@ -40,11 +40,11 @@ public enum ClassTypes {
 		return type;
 	}
 	
-	public static ClassTypes getPrimaryByID(int ID) {
+	public static ClassType getPrimaryByID(int ID) {
 		return BY_ID.get(ID);
 	}
 	
-	public static ClassTypes getByName(String name) {
+	public static ClassType getByName(String name) {
 		return BY_NAME.get(name.toLowerCase());
 	}
 	
@@ -54,7 +54,7 @@ public enum ClassTypes {
 	}
 	
 	static {
-		for (ClassTypes cl : values()) {
+		for (ClassType cl : values()) {
 			BY_ID.put(cl.number, cl);
 			BY_NAME.put(cl.name.toLowerCase(), cl);
 		}

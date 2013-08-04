@@ -60,4 +60,5 @@ public class Archer extends ClassBase {
 			Message.sendMessage(player, Message.CLASS_ARCHER_BOW_REPAIR);
 		}
 	}
+	
 }

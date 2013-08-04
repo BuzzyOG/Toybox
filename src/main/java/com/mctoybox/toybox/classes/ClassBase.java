@@ -10,26 +10,14 @@ import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
 public abstract class ClassBase implements Listener {
 	protected MainClass mainClass;
 	protected String className;
-	protected ClassTypes classRef;
+	protected ClassType classRef;
 	protected Permission permRequired;
 	
-	public ClassBase(MainClass mainClass, String ClassName, Permission permRequired) {
+	protected ClassBase(MainClass mainClass, String ClassName, Permission permRequired) {
 		this.mainClass = mainClass;
 		this.className = ClassName;
-		this.classRef = ClassTypes.getByName(className);
+		this.classRef = ClassType.getByName(className);
 		this.permRequired = permRequired;
-	}
-	
-	public String getName() {
-		return className;
-	}
-	
-	public ClassTypes getClassRef() {
-		return classRef;
-	}
-	
-	public Permission getPermRequired() {
-		return permRequired;
 	}
 	
 	public abstract void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException;

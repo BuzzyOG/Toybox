@@ -8,6 +8,10 @@ config:
   #If left as default, will disable capes
   #Default: /path/to/cape/directory/
   capePath: /path/to/cape/directory/
+classes:
+  alchemist:
+    #Determines whether or not to return the catalyst 
+    returnCatalyst: false
 #This contains a single example user
 users:
   example_user: 

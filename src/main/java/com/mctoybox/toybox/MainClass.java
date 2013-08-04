@@ -11,16 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.mctoybox.toybox.classes.Alchemist;
-import com.mctoybox.toybox.classes.Archer;
-import com.mctoybox.toybox.classes.ClassBase;
-import com.mctoybox.toybox.classes.Cook;
-import com.mctoybox.toybox.classes.Enchanter;
-import com.mctoybox.toybox.classes.Farmer;
-import com.mctoybox.toybox.classes.Lumberjack;
-import com.mctoybox.toybox.classes.Oreworker;
-import com.mctoybox.toybox.classes.Outsider;
-import com.mctoybox.toybox.classes.Warrior;
+import com.mctoybox.toybox.classes.ClassList;
 import com.mctoybox.toybox.commands.CapeCommandHandler;
 import com.mctoybox.toybox.commands.ClassCommandHandler;
 import com.mctoybox.toybox.listeners.PlayerInteract;
@@ -37,8 +28,7 @@ public class MainClass extends JavaPlugin {
 	
 	public ExtendedHashMap<String, ClassHolder> playerClasses;
 	
-	private ClassBase alchemist, archer, cook, enchanter, farmer, lumberjack, oreworker, outsider, warrior;
-	public ClassBase[] ClassList = new ClassBase[] { alchemist, archer, cook, enchanter, farmer, lumberjack, oreworker, outsider, warrior };
+	public ClassList classList = new ClassList(this);
 	
 	private boolean debugMode;
 	public File capeLocation;
@@ -68,16 +58,6 @@ public class MainClass extends JavaPlugin {
 		pm.registerEvents(new SpoutCraftEnable(this), this);
 		pm.registerEvents(new PlayerInteract(this), this);
 		pm.registerEvents(new PlayerMove(this), this);
-		
-		pm.registerEvents((alchemist = new Alchemist(this)), this);
-		pm.registerEvents((archer = new Archer(this)), this);
-		pm.registerEvents((cook = new Cook(this)), this);
-		pm.registerEvents((enchanter = new Enchanter(this)), this);
-		pm.registerEvents((farmer = new Farmer(this)), this);
-		pm.registerEvents((lumberjack = new Lumberjack(this)), this);
-		pm.registerEvents((oreworker = new Oreworker(this)), this);
-		pm.registerEvents((outsider = new Outsider(this)), this);
-		pm.registerEvents((warrior = new Warrior(this)), this);
 	}
 	
 	public void onDisable() {

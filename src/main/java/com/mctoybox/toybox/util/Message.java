@@ -19,6 +19,11 @@ public enum Message {
 	CLASS_ARCHER_BOW_REPAIR(ChatColor.GREEN, "Your skill in archery prevents your bow being damaged!"),
 	CLASS_NOT_FOUND(ChatColor.RED, "That class could not be found!"),
 	
+	CLASS_SET_TO(ChatColor.GREEN, "Your class has been set to %s"),
+	CLASS_SET_TO_OTHER(ChatColor.GREEN, "You have set %s's class to %s"),
+	
+	CLASS_SET_TARGET_NOT_ALLOWED(ChatColor.RED, "That player cannot become that class!"),
+	
 	INVALID_ARGUMENTS(ChatColor.RED, "Invalid arguments!"),
 	
 	NO_PERM_OVERRIDE_CAPE(ChatColor.RED, "You don't have permission to override cape permissions!"),
@@ -46,5 +51,9 @@ public enum Message {
 	
 	public static void sendMessage(CommandSender sender, Message message) {
 		sender.sendMessage(message.toString());
+	}
+	
+	public static void sendMessage(CommandSender sender, String message) {
+		sender.sendMessage(message);
 	}
 }

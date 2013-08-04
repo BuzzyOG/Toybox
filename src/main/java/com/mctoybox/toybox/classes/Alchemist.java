@@ -29,6 +29,8 @@ public class Alchemist extends ClassBase {
 	
 	private ArrayList<PotionEffectType> helpfulPotions;
 	
+	private boolean returnCatalyst;
+	
 	public Alchemist(MainClass mainClass) {
 		super(mainClass, "Alchemist", Permissions.CLASSES_ALCHEMIST);
 		
@@ -47,6 +49,8 @@ public class Alchemist extends ClassBase {
 		for (PotionEffectType t : types) {
 			helpfulPotions.add(t);
 		}
+		
+		returnCatalyst = mainClass.getConfig().getBoolean("classes.alchemist.returnCatalyst", false);
 	}
 	
 	@EventHandler
@@ -113,26 +117,35 @@ public class Alchemist extends ClassBase {
 					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.goldIngot, 1)
 					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.ironIngot, 1)) {
 				AlchemistRecipe = true;
-				if (!ClassTypes.ALCHEMIST.equals(mainClass.playerClasses.getSecondaryClass(player))) {
+				if (!ClassType.ALCHEMIST.equals(mainClass.playerClasses.getSecondaryClass(player))) {
 					event.setCancelled(true);
+					player.closeInventory();
 					Message.sendMessage(player, Message.CLASS_ALCHEMIST_ONLY_TRANSMUTE);
 				}
 			}
 		}
 		
-		if (!event.isCancelled() && AlchemistRecipe) {
-			// player.getInventory().addItem(new SpoutItemStack(catalyst, 1));
+		if (returnCatalyst && !event.isCancelled() && AlchemistRecipe) {
+			if (ItemChecker.CraftingArrayHas(mainClass, craftWindow, this.downgradeCatalyst)) {
+				player.getInventory().addItem(new SpoutItemStack(downgradeCatalyst, 1));
+			}
+			else {
+				player.getInventory().addItem(new SpoutItemStack(upgradeCatalyst, 1));
+			}
 		}
-		
 	}
 	
 	@Override
 	public void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException {
-		if (!player.hasPermission(Permissions.CLASSES_ALCHEMIST)) {
+		if (!player.hasPermission(permRequired)) {
 			throw new PlayerNotAllowedClassException();
 		}
 		
+		player.sendMessage(String.format(Message.CLASS_SET_TO.toString(), className));
+		
 		mainClass.playerClasses.setSecondaryClass(player.getName(), classRef);
+		mainClass.playerClasses.updateTitle(player);
 		mainClass.getConfig().set(player.getName() + ".SecondaryClass", classRef.getName());
+		mainClass.saveConfig();
 	}
 }

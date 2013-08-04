@@ -6,7 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.classes.ClassTypes;
+import com.mctoybox.toybox.classes.ClassType;
+import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
 import com.mctoybox.toybox.util.Message;
 import com.mctoybox.toybox.util.Permissions;
 
@@ -55,7 +56,7 @@ public class ClassCommandHandler extends CommandHandler implements CommandExecut
 			return false;
 		}
 		
-		ClassTypes newClass = ClassTypes.getByName(args[0]);
+		ClassType newClass = ClassType.getByName(args[0]);
 		if (newClass == null) {
 			Message.sendMessage(sender, Message.CLASS_NOT_FOUND);
 			return false;
@@ -68,15 +69,18 @@ public class ClassCommandHandler extends CommandHandler implements CommandExecut
 			return false;
 		}
 		
-		target.sendMessage("Your class has been set to " + newClass.getName());
-		
-		mainClass.playerClasses.setEitherClass(target.getName(), newClass);
-		
-		mainClass.getConfig().set(target.getName() + ".PrimaryClass", mainClass.playerClasses.getPrimaryClass(target).getName());
-		mainClass.getConfig().set(target.getName() + ".SecondaryClass", mainClass.playerClasses.getSecondaryClass(target).getName());
-		mainClass.saveConfig();
-		
-		mainClass.playerClasses.updateTitle(target);
+		try {
+			mainClass.classList.getClassByType(newClass).assignPlayerToClass(target);
+			if (sender instanceof SpoutPlayer && ((SpoutPlayer) sender).equals(target)) {
+				
+			}
+			else {
+				Message.sendMessage(sender, String.format(Message.CLASS_SET_TO_OTHER.toString(), target.getName(), newClass.getName()));
+			}
+		}
+		catch (PlayerNotAllowedClassException e) {
+			Message.sendMessage(sender, Message.CLASS_SET_TARGET_NOT_ALLOWED);
+		}
 		return true;
 	}
 	

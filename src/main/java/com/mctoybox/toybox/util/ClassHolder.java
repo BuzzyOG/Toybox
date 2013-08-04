@@ -1,38 +1,38 @@
 package com.mctoybox.toybox.util;
 
-import com.mctoybox.toybox.classes.ClassTypes;
+import com.mctoybox.toybox.classes.ClassType;
 import com.mctoybox.toybox.exceptions.NotPrimaryClassException;
 import com.mctoybox.toybox.exceptions.NotSecondaryClassException;
 
 public class ClassHolder {
-	private ClassTypes primary;
-	private ClassTypes secondary;
+	private ClassType primary;
+	private ClassType secondary;
 	
-	public ClassHolder(ClassTypes primary, ClassTypes secondary) {
+	public ClassHolder(ClassType primary, ClassType secondary) {
 		this.primary = primary;
 		this.secondary = secondary;
 	}
 	
-	public ClassHolder(ClassTypes primary) {
+	public ClassHolder(ClassType primary) {
 		this.primary = primary;
 		this.secondary = null;
 	}
 	
 	public ClassHolder() {
-		this.primary = ClassTypes.OUTSIDER;
+		this.primary = ClassType.OUTSIDER;
 		this.secondary = null;
 	}
 	
-	public ClassTypes getPrimary() {
+	public ClassType getPrimary() {
 		return primary;
 	}
 	
-	public ClassTypes getSecondary() {
+	public ClassType getSecondary() {
 		return secondary;
 	}
 	
-	public void setPrimary(ClassTypes newClass) throws NotPrimaryClassException {
-		if (newClass.getType().equals(ClassTypes.Type.PRIMARY)) {
+	public void setPrimary(ClassType newClass) throws NotPrimaryClassException {
+		if (newClass.getType().equals(ClassType.Type.PRIMARY)) {
 			this.primary = newClass;
 		}
 		else {
@@ -40,8 +40,8 @@ public class ClassHolder {
 		}
 	}
 	
-	public void setSecondary(ClassTypes newClass) throws NotSecondaryClassException {
-		if (newClass.getType().equals(ClassTypes.Type.SECONDARY) || newClass == null) {
+	public void setSecondary(ClassType newClass) throws NotSecondaryClassException {
+		if (newClass.getType().equals(ClassType.Type.SECONDARY) || newClass == null) {
 			this.secondary = newClass;
 		}
 		else {

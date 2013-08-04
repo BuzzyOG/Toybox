@@ -8,7 +8,7 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 import org.getspout.spoutapi.player.accessories.AccessoryType;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.classes.ClassTypes;
+import com.mctoybox.toybox.classes.ClassType;
 
 public class SpoutCraftEnable implements Listener {
 	private MainClass mainClass;
@@ -24,13 +24,13 @@ public class SpoutCraftEnable implements Listener {
 		String strPClass = mainClass.getConfig().getString("users." + player.getName().toLowerCase() + ".PrimaryClass", "Outsider");
 		String strSClass = mainClass.getConfig().getString("users." + player.getName().toLowerCase() + ".SecondaryClass", "None");
 		
-		ClassTypes PClass = ClassTypes.getByName(strPClass);
-		ClassTypes SClass = ClassTypes.getByName(strSClass);
+		ClassType PClass = ClassType.getByName(strPClass);
+		ClassType SClass = ClassType.getByName(strSClass);
 		
-		if (PClass == null || !PClass.getType().equals(ClassTypes.Type.PRIMARY)) {
+		if (PClass == null || !PClass.getType().equals(ClassType.Type.PRIMARY)) {
 			mainClass.getServer().getLogger().severe(player.getName() + " has an invalid or no entry for primary class!");
 			mainClass.getServer().getLogger().severe("Defaulting to Outsider class.");
-			PClass = ClassTypes.OUTSIDER;
+			PClass = ClassType.OUTSIDER;
 		}
 		
 		mainClass.playerClasses.setAllClasses(player.getName(), PClass, SClass);

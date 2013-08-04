@@ -1,6 +1,5 @@
 package com.mctoybox.toybox.listeners;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,10 +7,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
-import com.mctoybox.toybox.classes.ClassBase;
-import com.mctoybox.toybox.classes.ClassTypes;
 
+@SuppressWarnings("unused")
 public class PlayerInteract implements Listener {
+	
 	private MainClass mainClass;
 	
 	public PlayerInteract(MainClass mainClass) {
@@ -26,18 +25,6 @@ public class PlayerInteract implements Listener {
 		SpoutPlayer p = (SpoutPlayer) event.getPlayer();
 		
 		Block activated = event.getClickedBlock();
-		if (activated.getType().equals(Material.WOOD_BUTTON) || activated.getType().equals(Material.STONE_BUTTON) || activated.getType().equals(Material.SIGN_POST)
-				|| activated.getType().equals(Material.WALL_SIGN)) {
-			for (ClassBase c : mainClass.ClassList) {
-				String s = c.getClassRef().getName();
-				if ((mainClass.getConfig().getInt("classSigns." + s + ".x") == activated.getX()) && (mainClass.getConfig().getInt("classSigns." + s + ".y") == activated.getY())
-						&& (mainClass.getConfig().getInt("classSigns." + s + ".z") == activated.getZ())) {
-					// Checking if the clicked sign/button is a classsign
-					if (mainClass.playerClasses.get(p.getName()).equals(ClassTypes.OUTSIDER)) {
-						// Player is NOT already a class
-					}
-				}
-			}
-		}
+		
 	}
 }
