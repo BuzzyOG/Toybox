@@ -1,7 +1,6 @@
 package com.mctoybox.toybox.commands;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -11,9 +10,9 @@ import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
 import com.mctoybox.toybox.util.Message;
 import com.mctoybox.toybox.util.Permissions;
 
-public class ClassCommandHandler extends CommandHandler implements CommandExecutor {
+public class ClassCommandHandler extends CommandHandler {
 	public ClassCommandHandler(MainClass mainClass) {
-		super(mainClass, "class");
+		super(mainClass);
 	}
 	
 	@Override

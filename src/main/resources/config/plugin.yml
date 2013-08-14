@@ -1,20 +1,60 @@
 name: Toybox
-main: com.mctoybox.plugin.MainClass
+main: com.mctoybox.toybox.MainClass
 version: 1
 depend: [Spout]
 author: Sir_Speshkitty
 authors: [I_Hunta_x, OtakuDragon, Huggers]
 commands:
   cape:
-    description: Cape management commands
+    description: Provides information on cape commands
     usage: |
-      /<command> set <cape> [player] [override]
-      /<command> list [player]
-      /<command> listall [player]
-      /<command> grant <cape> <player>
-      /<command> deny <cape> <player>
+      Toybox Cape Commands
+      /denycape <cape> <player> - Stops a player being allowed to wear a cape. If the player is wearing that cape, their cape is set to their primary class.
+      /grantcape <cape> <player> - Allows a player to wear a cape.
+      /listcape [player] - Lists capes available to you or a named player
+      /listallcape [player] - Lists all capes. If a player is named, the list is coloured depending on what they can wear
+      /setcape <cape> [player [override]] - Sets a players cape. If the override tag is used, the players permission will not be checked.
+  denycape:
+    description: Stops players using a cape
+    permission: toybox.cape.deny
+    usage: /<command> <cape> <player>
+  grantcape:
+    description: Allows players to use a cape
+    permission: toybox.cape.grant
+    usage: /<command> <cape> <player>
+  listallcape:
+    description: Lists all capes
+    permission: toybox.cape.list.all
+    usage: /<command> all [player]
+    aliases: [listallcapes]
+  listcape:
+    description: Lists capes
+    permission: toybox.cape.list
+    usage: /<command> [player]
+    aliases: [listcapes]
+  setcape:
+    description: Sets a players cape
+    permission: toybox.cape.set
+    usage: /<command> <cape> [player [override]]
+    
   class:
     description: The base command for all class functions
     usage: |
-      /<command> set <class> [player]
-      /<command> list
+      Toybox class commands
+      /listclass [player] - Lists classes available to you or a named player
+      /listallclass [player] - Lists all classes. If a player is named, the list is coloured depending on what class they can be
+      /setclass <class> [player [override]] - Sets a players class. If the override tag is used, the players permission will not be checked.
+  setclass:
+    description: Sets classes
+    permission: toybox.class.set
+    usage: /<command> <class> [player [override]]
+  listallclass:
+    description: Lists classes
+    permission: toybox.class.list.all
+    usage: /<command> all [player]
+    aliases: [listallclasses]
+  listclass:
+    description: Lists classes
+    permission: toybox.class.list
+    usage: /<command> [player]
+    aliases: [listclasses]

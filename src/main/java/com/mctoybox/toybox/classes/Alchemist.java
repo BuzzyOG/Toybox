@@ -18,7 +18,9 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
 import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
+import com.mctoybox.toybox.util.Config;
 import com.mctoybox.toybox.util.ItemChecker;
+import com.mctoybox.toybox.util.MaterialHolder;
 import com.mctoybox.toybox.util.Message;
 import com.mctoybox.toybox.util.Permissions;
 import com.mctoybox.toybox.util.Recipes;
@@ -34,14 +36,22 @@ public class Alchemist extends ClassBase {
 	public Alchemist(MainClass mainClass) {
 		super(mainClass, "Alchemist", Permissions.CLASSES_ALCHEMIST);
 		
-		Recipes.NewShapelessRecipe(MaterialData.ironIngot, new Material[] { upgradeCatalyst, MaterialData.cobblestone }, new int[] { 1, 8 });
-		Recipes.NewShapelessRecipe(MaterialData.goldIngot, new Material[] { upgradeCatalyst, MaterialData.ironIngot }, new int[] { 1, 8 });
-		Recipes.NewShapelessRecipe(MaterialData.diamond, new Material[] { upgradeCatalyst, MaterialData.goldIngot }, new int[] { 1, 4 });
+		downgradeCatalyst = ItemChecker.LookupItem(mainClass.getName(), mainClass.getConfig().getString(Config.ALCHEMIST_DOWNGRADE_CATALYST.toString()));
+		upgradeCatalyst = ItemChecker.LookupItem(mainClass.getName(), mainClass.getConfig().getString(Config.ALCHEMIST_UPGRADE_CATALYST.toString()));
 		
-		Recipes.NewShapelessRecipe(MaterialData.cobblestone, 8, new Material[] { downgradeCatalyst, MaterialData.ironIngot }, new int[] { 1, 1 });
-		Recipes.NewShapelessRecipe(MaterialData.ironIngot, 8, new Material[] { downgradeCatalyst, MaterialData.goldIngot }, new int[] { 1, 1 });
-		Recipes.NewShapelessRecipe(MaterialData.goldIngot, 4, new Material[] { downgradeCatalyst, MaterialData.diamond }, new int[] { 1, 1 });
-		
+		try {
+			// Upgrades
+			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.ironIngot), new MaterialHolder(upgradeCatalyst), new MaterialHolder(MaterialData.cobblestone, 8));
+			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.goldIngot), new MaterialHolder(upgradeCatalyst), new MaterialHolder(MaterialData.ironIngot, 8));
+			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.diamond), new MaterialHolder(upgradeCatalyst), new MaterialHolder(MaterialData.goldIngot, 4));
+			// Downgrades
+			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.cobblestone, 8), new MaterialHolder(downgradeCatalyst), new MaterialHolder(MaterialData.ironIngot));
+			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.ironIngot, 8), new MaterialHolder(downgradeCatalyst), new MaterialHolder(MaterialData.goldIngot));
+			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.goldIngot, 4), new MaterialHolder(downgradeCatalyst), new MaterialHolder(MaterialData.diamond));
+		}
+		catch (IllegalArgumentException e) {
+			mainClass.getLogger().severe("Error registering a transmution!");
+		}
 		helpfulPotions = new ArrayList<PotionEffectType>();
 		PotionEffectType[] types = { PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FAST_DIGGING, PotionEffectType.FIRE_RESISTANCE, PotionEffectType.INCREASE_DAMAGE,
 				PotionEffectType.INVISIBILITY, PotionEffectType.JUMP, PotionEffectType.NIGHT_VISION, PotionEffectType.REGENERATION, PotionEffectType.SPEED, PotionEffectType.WATER_BREATHING };
@@ -80,6 +90,8 @@ public class Alchemist extends ClassBase {
 		// normal
 		
 		event.setCancelled(true);
+		// We have to cancel the event because otherwise the normal effect is
+		// applied, and there's no way to override it
 		
 		Potion potion = Potion.fromItemStack(item);
 		
@@ -111,11 +123,15 @@ public class Alchemist extends ClassBase {
 		
 		boolean AlchemistRecipe = false;
 		if (ItemChecker.CraftingArrayHas(mainClass, craftWindow, this.downgradeCatalyst) || ItemChecker.CraftingArrayHas(mainClass, craftWindow, this.upgradeCatalyst)) {
-			if (ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.cobblestone, 8) || ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.ironIngot, 8)
+			if (ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.cobblestone, 8)
+					|| ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.ironIngot, 8)
 					|| ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.goldIngot, 4)
 					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.diamond, 1)
 					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.goldIngot, 1)
-					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.ironIngot, 1)) {
+					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.ironIngot, 1)
+					|| (ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.obsidian, 4)
+							&& ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.glowstoneDust, 4) && ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow,
+							MaterialData.diamond, 1))) {
 				AlchemistRecipe = true;
 				if (!ClassType.ALCHEMIST.equals(mainClass.playerClasses.getSecondaryClass(player))) {
 					event.setCancelled(true);

@@ -38,6 +38,8 @@ public class SpoutCraftEnable implements Listener {
 		
 		String cape = mainClass.getConfig().getString("users." + player.getName().toLowerCase() + ".CurrentCape", "none");
 		
+		// player.setTexturePack("https://dl.dropboxusercontent.com/u/16478138/Minecraft/texturepack.zip");
+		
 		if (!cape.equals("none") && !mainClass.capeLocation.equals("/path/to/cape/directory/"))
 			player.setCape(mainClass.capeLocation + cape + ".png");
 		

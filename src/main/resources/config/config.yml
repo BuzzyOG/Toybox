@@ -1,17 +1,26 @@
-config: 
-  #Enable this to show all debug messages.
-  #This will produce a lot of output!
-  #Default: false
-  debug: false
+config:
   #This determines the folder capes are stored in
   #Note capes should be png files
   #If left as default, will disable capes
   #Default: /path/to/cape/directory/
-  capePath: /path/to/cape/directory/
+  internalCapePath: /path/to/cape/directory/
+  #The external folder where capes are stored
+  #This address must be reachable by the client for capes to work!
+  externalCapePath: http://yourwebsite.com/capefolder/
 classes:
   alchemist:
-    #Determines whether or not to return the catalyst 
-    returnCatalyst: false
+    #The catalysts to be used in alchemist recipes
+    #Options can be any vanilla item or "catalyst" for the custom item 
+    upgradeCatalyst: slimeball
+    downgradeCatalyst: feather
+    #The uses a catalyst item has before disintegrating
+    #If this is negative the item has infinite uses
+    #This only affects the custom item
+    catalystUses: -1
+    #Determines whether or not to return the catalysts on use
+    #These have no effect on the custom item
+    returnUpgradeCatalyst: false
+    returnDowngradeCatalyst: false
 #This contains a single example user
 users:
   example_user: 
@@ -21,10 +30,3 @@ users:
     #Default location for this cape would therefore be:
     #/path/to/cape/directory/Admin.png
     CurrentCape: Admin
-    #This list shows most capes the player is allowed.
-    #The player is also allowed any capes with names matching the player classes
-    #So the capes example_user is allowed are Admin.png, Developer.png, Warrior.png and Enchanter.png
-    #If the user is wearing a class cape and removes that class, the cape will be automatically removed.
-    AllowedCapes:
-      - Admin
-      - Developer

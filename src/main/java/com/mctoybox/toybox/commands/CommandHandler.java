@@ -1,27 +1,13 @@
 package com.mctoybox.toybox.commands;
 
-import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 
 import com.mctoybox.toybox.MainClass;
 
-public class CommandHandler {
+public abstract class CommandHandler implements CommandExecutor {
 	protected MainClass mainClass;
 	
-	private String usage;
-	private String description;
-	
-	public CommandHandler(MainClass mainClass, String commandName) {
+	public CommandHandler(MainClass mainClass) {
 		this.mainClass = mainClass;
-		Command cmd = mainClass.getCommand(commandName);
-		this.usage = cmd.getUsage();
-		this.description = cmd.getDescription();
-	}
-	
-	protected String getUsage() {
-		return usage;
-	}
-	
-	public String getDescription() {
-		return description;
 	}
 }

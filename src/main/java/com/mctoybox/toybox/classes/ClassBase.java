@@ -18,6 +18,8 @@ public abstract class ClassBase implements Listener {
 		this.className = ClassName;
 		this.classRef = ClassType.getByName(className);
 		this.permRequired = permRequired;
+		
+		mainClass.getServer().getPluginManager().registerEvents(this, mainClass);
 	}
 	
 	public abstract void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException;
