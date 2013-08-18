@@ -1,5 +1,6 @@
 package com.mctoybox.toybox.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -43,11 +44,30 @@ public class CapeCommandHandler extends CommandHandler {
 	
 	private void Cape(CommandSender sender, Command command, String[] args) {
 		sender.sendMessage(command.getUsage());
-		return;
 	}
 	
 	private void DenyCape(CommandSender sender, Command command, String[] args) {
-		return;
+		// cape, player
+		SpoutPlayer target;
+		String capeName = "";
+		
+		if (args.length != 2) {
+			Message.sendMessage(sender, Message.INVALID_ARGUMENTS);
+			sender.sendMessage(command.getUsage());
+			return;
+		}
+		
+		capeName = args[0];
+		target = (SpoutPlayer) mainClass.getServer().getPlayer(args[1]);
+		if (target == null) {
+			Message.sendMessage(sender, Message.PLAYER_NOT_FOUND);
+			return;
+		}
+		if (!target.hasPermission("toybox.capes." + capeName)) {
+			Message.sendMessage(sender, Message.CAPE_NO_PERMISSION_OTHER);
+			return;
+		}
+		target.addAttachment(mainClass, "toybox.capes." + capeName, false);
 	}
 	
 	private void GrantCape(CommandSender sender, Command command, String[] args) {
@@ -66,55 +86,64 @@ public class CapeCommandHandler extends CommandHandler {
 		// setcape cape
 		// setcape cape player
 		// setcape cape player override
+		// If cape == "none" removecape
 		
-		if (args.length == 0 || args.length > 3) {
+		// Player has permission to use /setcape
+		
+		SpoutPlayer target;
+		boolean removeCape = false, override = false, targIsSender = false;
+		String capeName = "";
+		
+		if (args.length < 1 || args.length > 3) {
+			Message.sendMessage(sender, Message.INVALID_ARGUMENTS);
 			sender.sendMessage(command.getUsage());
 			return;
 		}
-		if (!mainClass.capes.contains(args[0])) {
-			Message.sendMessage(sender, Message.CAPE_NOT_FOUND);
-			Message.sendMessage(sender, Message.CAPE_NOT_FOUND_NOTE);
-			return;
-		}
-		SpoutPlayer target;
-		if (!(sender instanceof SpoutPlayer) && args.length == 1) {
-			Message.sendMessage(sender, Message.SPECIFY_PLAYER);
-			return;
-		}
-		else if (sender instanceof SpoutPlayer && args.length == 1) {
+		
+		override = "override".equalsIgnoreCase(args[2]) && sender.hasPermission(Permissions.CAPE_SET_OVERRIDE.getName());
+		
+		if (args.length == 1) {
+			if (!(sender instanceof SpoutPlayer)) {
+				Message.sendMessage(sender, Message.SPECIFY_PLAYER);
+				return;
+			}
 			target = (SpoutPlayer) sender;
 		}
 		else {
+			if (!sender.hasPermission(Permissions.CAPE_SET_OTHER.getName())) {
+				Message.sendMessage(sender, Message.CAPE_NO_PERMISSION_OTHER);
+				return;
+			}
 			target = (SpoutPlayer) mainClass.getServer().getPlayer(args[1]);
-			if (target == null) {
-				Message.sendMessage(sender, Message.PLAYER_NOT_FOUND);
-				sender.sendMessage(command.getUsage());
-				return;
-			}
-			if (!sender.hasPermission(Permissions.CAPE_SET_OTHER)) {
-				Message.sendMessage(sender, Message.NO_PERM_SET_OTHER_CAPE);
-			}
-		}
-		boolean override = false;
-		
-		if ("override".equalsIgnoreCase(args[2])) {
-			if (!sender.hasPermission(Permissions.CAPE_SET_OVERRIDE)) {
-				Message.sendMessage(sender, Message.NO_PERM_OVERRIDE_CAPE);
-				return;
-			}
-			override = true;
 		}
 		
-		if (!override && !mainClass.getConfig().getStringList("user." + target.getName() + ".AllowedCapes").contains(args[0])) {
-			Message.sendMessage(sender, sender.getName().equals(target.getName()) ? Message.CAPE_NO_PERMISSION : Message.CAPE_NO_PERMISSION_OTHER);
-			sender.sendMessage(command.getUsage());
+		if (target == null) {
+			Message.sendMessage(sender, Message.PLAYER_NOT_FOUND);
 			return;
 		}
 		
-		target.setCape(mainClass.capeLocation.getAbsolutePath() + args[0] + ".png");
-		Message.sendMessage(target, Message.CAPE_SET);
-		if (!sender.getName().equals(target.getName())) {
-			Message.sendMessage(sender, Message.CAPE_SET_OTHER);
+		targIsSender = ((SpoutPlayer) sender).equals(target);
+		
+		removeCape = "none".equalsIgnoreCase(args[0]);
+		capeName = args[0];
+		
+		if (removeCape) {
+			target.resetCape();
+			Message.sendMessage(target, ChatColor.GREEN + "Your cape has been removed" + (targIsSender ? "" : " by " + sender.getName()) + "!");
+			Message.sendMessage(sender, ChatColor.GREEN + "You have removed " + target.getName() + "'s cape!");
+			mainClass.logMessage(sender.getName() + " removed " + target.getName() + "'s cape.");
 		}
+		else {
+			if (target.hasPermission("toybox.capes." + capeName) || override) {
+				target.setCape(mainClass.getSettings().getResourceLocation() + capeName + ".png");
+				Message.sendMessage(target, ChatColor.GREEN + "Your cape was set to " + capeName + (targIsSender ? "" : " by " + sender.getName()) + "!");
+				Message.sendMessage(sender, ChatColor.GREEN + "You have set " + target.getName() + "'s cape to " + capeName + "!");
+				mainClass.logMessage(sender.getName() + " set " + target.getName() + "'s cape to " + capeName + ".");
+			}
+			else {
+				Message.sendMessage(sender, Message.CAPE_NO_PERMISSION_OTHER);
+			}
+		}
+		
 	}
 }

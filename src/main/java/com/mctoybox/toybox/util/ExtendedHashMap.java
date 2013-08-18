@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.classes.ClassType;
+import com.mctoybox.toybox.util.holder.ClassHolder;
 
 public class ExtendedHashMap<T, V> extends HashMap<String, ClassHolder> {
 	private static final long serialVersionUID = 1L;

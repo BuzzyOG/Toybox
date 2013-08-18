@@ -3,7 +3,6 @@ package com.mctoybox.toybox.blocks;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
-import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -19,9 +18,7 @@ public class Stove extends GenericCuboidCustomBlock {
 	public Stove(Plugin plugin, String name) {
 		super(plugin, name);
 		this.mainClass = (MainClass) plugin;
-		this.setBlockDesign(new GenericCubeBlockDesign(plugin, mainClass.externalPath + "Stove.png", 32));
-		
-		MaterialData.addCustomBlock(this);
+		this.setBlockDesign(new GenericCubeBlockDesign(plugin, mainClass.getSettings().getResourceLocation() + "Blocks/Stove.png", 32));
 	}
 	
 	@Override

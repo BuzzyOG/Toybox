@@ -38,13 +38,11 @@ public class SpoutCraftEnable implements Listener {
 		
 		String cape = mainClass.getConfig().getString("users." + player.getName().toLowerCase() + ".CurrentCape", "none");
 		
-		// player.setTexturePack("https://dl.dropboxusercontent.com/u/16478138/Minecraft/texturepack.zip");
-		
-		if (!cape.equals("none") && !mainClass.capeLocation.equals("/path/to/cape/directory/"))
-			player.setCape(mainClass.capeLocation + cape + ".png");
+		if (!cape.equals("none") && !mainClass.getSettings().getResourceLocation().equals("err") && player.hasPermission("toybox.capes." + cape))
+			player.setCape(mainClass.getSettings().getResourceLocation() + cape + ".png");
 		
 		if (mainClass.getDescription().getAuthors().contains(player.getName())) {
-			player.addAccessory(AccessoryType.TOPHAT, "http://www.almuramc.com/playerplus/tophat/pp-th-23.png");
+			player.addAccessory(AccessoryType.BRACELET, "http://www.almuramc.com/playerplus/bracelet/pp-bc-618.png");
 		}
 	}
 }

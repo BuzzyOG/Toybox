@@ -1,8 +1,8 @@
 package com.mctoybox.toybox.util;
 
 public enum Config {
-	CAPE_EXTERNAL_LOCATION("config.externalCapePath"),
-	CAPE_INTERNAL_LOCATION("config.internalCapePath"),
+	RESOURCE_LOCATION("config.externalResourcePath"),
+	CAPE_LIST("config.capeList"),
 	
 	ALCHEMIST_CATALYST_USES("classes.alchemist.catalystUses"),
 	ALCHEMIST_DOWNGRADE_CATALYST("classes.alchemist.downgradeCatalyst"),

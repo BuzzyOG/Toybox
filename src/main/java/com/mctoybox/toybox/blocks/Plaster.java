@@ -14,7 +14,6 @@ import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
-import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.material.block.GenericCuboidCustomBlock;
 
 import com.mctoybox.toybox.MainClass;
@@ -23,20 +22,18 @@ public class Plaster extends GenericCuboidCustomBlock implements Listener {
 	private MainClass mainClass;
 	
 	public Plaster(Plugin plugin, String colour) {
-		super(plugin, colour + " Plaster");
+		super(plugin, colour + " Plaster", 1);
 		
 		this.mainClass = (MainClass) plugin;
-		this.setBlockDesign(new GenericCubeBlockDesign(plugin, mainClass.externalPath + this.getName().replaceAll(" ", "") + ".png", 32));
+		this.setBlockDesign(new GenericCubeBlockDesign(plugin, mainClass.getSettings().getResourceLocation() + "Blocks/" + "Plaster" + colour.replaceAll(" ", "") + ".png", 32));
 		
 		if (colour.equalsIgnoreCase("white")) {
 			mainClass.getServer().getPluginManager().registerEvents(this, mainClass);
 		}
 		this.setItemDrop(new SpoutItemStack(this));
-		MaterialData.addCustomBlock(this);
 		mainClass.debugOutput(colour + " plaster implemented");
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onEntityExplode(EntityExplodeEvent event) {
 		List<Block> blocksToKeep = new ArrayList<Block>();
@@ -46,7 +43,7 @@ public class Plaster extends GenericCuboidCustomBlock implements Listener {
 		mainClass.debugOutput("test1");
 		for (Block b : event.blockList()) {
 			SpoutBlock sBlock = (SpoutBlock) b;
-			if (sBlock.getName().toLowerCase().endsWith("plaster")) {
+			if (sBlock.getCustomBlock().getFullName().toLowerCase().endsWith("plaster")) {
 				mainClass.debugOutput("test2");
 				blocksToKeep.add(b);
 			}

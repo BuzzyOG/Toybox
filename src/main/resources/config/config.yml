@@ -1,12 +1,23 @@
 config:
-  #This determines the folder capes are stored in
-  #Note capes should be png files
-  #If left as default, will disable capes
-  #Default: /path/to/cape/directory/
-  internalCapePath: /path/to/cape/directory/
-  #The external folder where capes are stored
-  #This address must be reachable by the client for capes to work!
-  externalCapePath: http://yourwebsite.com/capefolder/
+  #The external folder where custom textures are stored
+  #Note textures should be png files
+  #This address must be reachable by the client for custom items to work!
+  externalResourcePath: https://dl.dropboxusercontent.com/u/16478138/Toybox/
+  #The list of capes
+  #Capes listed here must be found at the external resource path as PNG files
+  #If class capes are removed, that class will not have a cape
+  #Access to capes is denoted by the permission node toybox.capes.capename
+  #Granting players access to a class cape permission node is not recommended.
+  capeList:
+    - Alchemist
+    - Archer
+    - Cook
+    - Enchanter
+    - Farmer
+    - Lumberjack
+    - Oreworker
+    - Outsider
+    - Warrior
 classes:
   alchemist:
     #The catalysts to be used in alchemist recipes

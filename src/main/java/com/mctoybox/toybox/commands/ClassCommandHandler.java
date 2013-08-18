@@ -8,7 +8,6 @@ import com.mctoybox.toybox.MainClass;
 import com.mctoybox.toybox.classes.ClassType;
 import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
 import com.mctoybox.toybox.util.Message;
-import com.mctoybox.toybox.util.Permissions;
 
 public class ClassCommandHandler extends CommandHandler {
 	public ClassCommandHandler(MainClass mainClass) {
@@ -17,55 +16,50 @@ public class ClassCommandHandler extends CommandHandler {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		String[] toPass = new String[args.length - 1];
-		for (int i = 1; i < args.length; i++) {
-			toPass[i - 1] = args[i];
+		switch (command.getName()) {
+			case "class":
+				Class(sender, command, args);
+				break;
+			case "setclass":
+				SetClass(sender, command, args);
+			case "listclass":
+				ListClasses(sender, command, args);
+			default:
+				Message.sendMessage(sender, Message.UNKNOWN_COMMAND);
+				return false;
 		}
-		
-		if (args[0].equalsIgnoreCase("set")) {
-			if (sender.hasPermission(Permissions.CLASS_SET_OWN)) {
-				return SetClass(sender, toPass);
-			}
-			else {
-				Message.sendMessage(sender, Message.NO_PERM_UNSPECIFIED);
-			}
-		}
-		else if (args[0].equalsIgnoreCase("list")) {
-			if (sender.hasPermission(Permissions.CLASS_LIST)) {
-				return ListClasses(sender, toPass);
-			}
-			else {
-				Message.sendMessage(sender, Message.NO_PERM_UNSPECIFIED);
-			}
-		}
-		else {
-			Message.sendMessage(sender, Message.UNKNOWN_COMMAND);
-			return false;
-		}
-		return false;
+		return true;
 	}
 	
-	private boolean SetClass(CommandSender sender, String[] args) {
+	private void Class(CommandSender sender, Command command, String[] args) {
+		sender.sendMessage(command.getUsage());
+	}
+	
+	private void SetClass(CommandSender sender, Command command, String[] args) {
 		if (args.length == 0 || args.length > 2) {
 			Message.sendMessage(sender, Message.INVALID_ARGUMENTS);
-			return false;
+			sender.sendMessage(command.getUsage());
+			return;
 		}
 		if (args.length == 1 && !(sender instanceof SpoutPlayer)) {
 			Message.sendMessage(sender, Message.SPECIFY_PLAYER);
-			return false;
+			sender.sendMessage(command.getUsage());
+			return;
 		}
 		
 		ClassType newClass = ClassType.getByName(args[0]);
 		if (newClass == null) {
 			Message.sendMessage(sender, Message.CLASS_NOT_FOUND);
-			return false;
+			sender.sendMessage(command.getUsage());
+			return;
 		}
 		
 		SpoutPlayer target = (SpoutPlayer) ((args.length == 1) ? sender : mainClass.getServer().getPlayer(args[1]));
 		
 		if (target == null) {
 			Message.sendMessage(sender, Message.PLAYER_NOT_FOUND);
-			return false;
+			sender.sendMessage(command.getUsage());
+			return;
 		}
 		
 		try {
@@ -80,10 +74,9 @@ public class ClassCommandHandler extends CommandHandler {
 		catch (PlayerNotAllowedClassException e) {
 			Message.sendMessage(sender, Message.CLASS_SET_TARGET_NOT_ALLOWED);
 		}
-		return true;
 	}
 	
-	private boolean ListClasses(CommandSender sender, String[] args) {
-		return false;
+	private void ListClasses(CommandSender sender, Command command, String[] args) {
+		
 	}
 }

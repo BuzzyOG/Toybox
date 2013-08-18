@@ -1,9 +1,5 @@
 package com.mctoybox.toybox;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
@@ -11,39 +7,35 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 
+import com.mctoybox.toybox.blocks.ColoredGlass;
 import com.mctoybox.toybox.blocks.Plaster;
 import com.mctoybox.toybox.blocks.Stove;
 import com.mctoybox.toybox.classes.ClassList;
+import com.mctoybox.toybox.classes.ClassType;
 import com.mctoybox.toybox.commands.CapeCommandHandler;
 import com.mctoybox.toybox.commands.ClassCommandHandler;
 import com.mctoybox.toybox.items.Catalyst;
 import com.mctoybox.toybox.listeners.PlayerInteract;
 import com.mctoybox.toybox.listeners.PlayerMove;
 import com.mctoybox.toybox.listeners.SpoutCraftEnable;
-import com.mctoybox.toybox.util.ClassHolder;
-import com.mctoybox.toybox.util.Config;
 import com.mctoybox.toybox.util.ExtendedHashMap;
 import com.mctoybox.toybox.util.ItemChecker;
-import com.mctoybox.toybox.util.MaterialHolder;
 import com.mctoybox.toybox.util.Recipes;
+import com.mctoybox.toybox.util.Settings;
+import com.mctoybox.toybox.util.holder.ClassHolder;
+import com.mctoybox.toybox.util.holder.MaterialHolder;
+import com.mctoybox.toybox.util.holder.RecipeHolder;
 
 public class MainClass extends JavaPlugin {
-	
 	public ExtendedHashMap<String, ClassHolder> playerClasses;
-	
 	public ClassList classList;
 	
-	private boolean debugMode;
-	public File capeLocation;
-	public List<String> capes;
-	
-	public String externalPath;
+	private Settings settings;
 	
 	public void onEnable() {
 		saveDefaultConfig();
 		
-		debugMode = getConfig().getBoolean("config.debug", false);
-		externalPath = getConfig().getString(Config.CAPE_EXTERNAL_LOCATION.toString());
+		settings = new Settings(this);
 		
 		classList = new ClassList(this);
 		
@@ -51,18 +43,11 @@ public class MainClass extends JavaPlugin {
 		CreateCommands();
 		CreateItems();
 		
+		settings.setupLater();
+		
 		CreateRecipes();
 		
 		playerClasses = new ExtendedHashMap<String, ClassHolder>();
-		
-		capeLocation = new File(getConfig().getString("config.capePath", "/path/to/cape/directory/"));
-		capes = new ArrayList<String>();
-		if (capeLocation.canRead())
-			for (File f : capeLocation.listFiles()) {
-				if (f.isFile()) {
-					capes.add(f.getName().substring(0, f.getName().toLowerCase().lastIndexOf(".")));
-				}
-			}
 		
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new SpoutCraftEnable(this), this);
@@ -70,28 +55,19 @@ public class MainClass extends JavaPlugin {
 		pm.registerEvents(new PlayerMove(this), this);
 	}
 	
-	public void onDisable() {
-	}
-	
 	private void CreateBlocks() {
+		String[] colours = new String[] { "White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Light Gray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black" };
+		
 		new Stove(this);
 		
-		new Plaster(this, "Black");
-		new Plaster(this, "Blue");
-		new Plaster(this, "Brown");
-		new Plaster(this, "Cyan");
-		new Plaster(this, "Gray");
-		new Plaster(this, "Green");
-		new Plaster(this, "Light Blue");
-		new Plaster(this, "Light Gray");
-		new Plaster(this, "Lime");
-		new Plaster(this, "Magenta");
-		new Plaster(this, "Orange");
-		new Plaster(this, "Pink");
-		new Plaster(this, "Purple");
-		new Plaster(this, "Red");
-		new Plaster(this, "White");
-		new Plaster(this, "Yellow");
+		for (String s : colours) {
+			new Plaster(this, s);
+			
+		}
+		// TODO light blue glass needs darkeningd
+		for (String s : colours) {
+			new ColoredGlass(this, s);
+		}
 	}
 	
 	private void CreateCommands() {
@@ -117,24 +93,21 @@ public class MainClass extends JavaPlugin {
 		 * Blocks
 		 */
 		// Stove
-		Recipes.NewShapedRecipe(new MaterialHolder(ItemChecker.LookupItem(getName(), "Stove")), "000010000", MaterialData.cobblestone, MaterialData.glass);
-		Recipes.NewShapedRecipe(new MaterialHolder(ItemChecker.LookupItem(getName(), "Stove")), "000010000", MaterialData.cobblestone, MaterialData.glassPane);
+		Recipes.NewRecipe(new RecipeHolder(ItemChecker.LookupItem(this, "Stove"), "000010000", MaterialData.cobblestone, MaterialData.glass));
+		Recipes.NewRecipe(new RecipeHolder(ItemChecker.LookupItem(this, "Stove"), "000010000", MaterialData.cobblestone, MaterialData.glassPane));
 		
+		// All plasters
 		String[] plasterArray = { "black", "blue", "brown", "cyan", "gray", "green", "light blue", "light gray", "lime", "magenta", "orange", "pink", "purple", "red", "white", "yellow" };
 		Material[] dyeArray = { MaterialData.inkSac, MaterialData.lapisLazuli, MaterialData.cocoaBeans, MaterialData.cyanDye, MaterialData.grayDye, MaterialData.cactusGreen,
 				MaterialData.lightBlueDye, MaterialData.lightGrayDye, MaterialData.limeDye, MaterialData.magentaDye, MaterialData.orangeDye, MaterialData.pinkDye, MaterialData.purpleDye,
 				MaterialData.roseRed, MaterialData.boneMeal, MaterialData.dandelionYellow };
 		
-		// All plasters
-		Recipes.NewShapelessRecipe(new MaterialHolder("white plaster"), MaterialData.sand, MaterialData.clay);
 		for (int i = 0; i < plasterArray.length; i++) {
-			if (!plasterArray[i].equals("white")) {
-				Recipes.NewShapelessRecipe(new MaterialHolder(plasterArray[i] + " plaster"), MaterialData.sand, MaterialData.clay, dyeArray[i]);
-			}
+			Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(plasterArray[i] + " plaster"), MaterialData.sand, MaterialData.clay, dyeArray[i]));
 			for (int j = 0; j < plasterArray.length; j++) {
 				if (i == j)
 					continue;
-				Recipes.NewShapelessRecipe(new MaterialHolder(plasterArray[i] + " plaster"), new MaterialHolder(plasterArray[j] + " plaster"), new MaterialHolder(dyeArray[i]));
+				Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(plasterArray[i] + " plaster"), new MaterialHolder(plasterArray[j] + " plaster"), new MaterialHolder(dyeArray[i])));
 			}
 		}
 		
@@ -142,12 +115,49 @@ public class MainClass extends JavaPlugin {
 		 * Items
 		 */
 		// Catalyst
-		Recipes.NewShapedRecipe(new MaterialHolder(ItemChecker.LookupItem(getName(), "catalyst")), "010121010", MaterialData.obsidian, MaterialData.glowstoneDust, MaterialData.diamond);
-		Recipes.NewShapedRecipe(new MaterialHolder(ItemChecker.LookupItem(getName(), "catalyst")), "010121010", MaterialData.glowstoneDust, MaterialData.obsidian, MaterialData.diamond);
+		Recipes.NewRecipe(new RecipeHolder(ItemChecker.LookupItem(this, "catalyst"), "010121010", ClassType.ALCHEMIST, MaterialData.obsidian, MaterialData.glowstoneDust, MaterialData.diamond));
+		Recipes.NewRecipe(new RecipeHolder(ItemChecker.LookupItem(this, "catalyst"), "010121010", ClassType.ALCHEMIST, MaterialData.glowstoneDust, MaterialData.obsidian, MaterialData.diamond));
+		
+		// Rotten Flesh -> Leather
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.leather, "furnace", MaterialData.rottenFlesh));
+		
+		/*
+		 * Transmutions
+		 */
+		// 8 cobblestone -> 1 iron ingot
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.ironIngot, ClassType.ALCHEMIST, new MaterialHolder(getSettings().getUpgradeCatalyst()), new MaterialHolder(MaterialData.cobblestone, 8)));
+		// 8 iron ingot -> 1 gold ingot
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.goldIngot, ClassType.ALCHEMIST, new MaterialHolder(getSettings().getUpgradeCatalyst()), new MaterialHolder(MaterialData.ironIngot, 8)));
+		// 8 iron block -> 1 gold block
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.goldBlock, ClassType.ALCHEMIST, new MaterialHolder(getSettings().getUpgradeCatalyst()), new MaterialHolder(MaterialData.ironBlock, 8)));
+		// 8 gold ingot -> 1 diamond
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.diamond, ClassType.ALCHEMIST, new MaterialHolder(getSettings().getUpgradeCatalyst()), new MaterialHolder(MaterialData.goldIngot, 8)));
+		// 8 gold block -> 1 diamond block
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.diamondBlock, ClassType.ALCHEMIST, new MaterialHolder(getSettings().getUpgradeCatalyst()), new MaterialHolder(MaterialData.goldBlock, 8)));
+		// 4 charcoal -> 1 coal
+		Recipes.NewRecipe(new RecipeHolder(MaterialData.coal, ClassType.ALCHEMIST, new MaterialHolder(getSettings().getUpgradeCatalyst()), new MaterialHolder(MaterialData.charcoal, 4)));
+		
+		// 1 iron ingot -> 8 cobblestone
+		Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(MaterialData.cobblestone, 8), ClassType.ALCHEMIST, getSettings().getDowngradeCatalyst(), MaterialData.ironIngot));
+		// 1 gold bar -> 8 iron ingot
+		Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(MaterialData.ironIngot, 8), ClassType.ALCHEMIST, getSettings().getDowngradeCatalyst(), MaterialData.goldIngot));
+		// 1 gold block -> 8 iron block
+		Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(MaterialData.ironBlock, 8), ClassType.ALCHEMIST, getSettings().getDowngradeCatalyst(), MaterialData.goldBlock));
+		// 1 diamond -> 8 gold bar
+		Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(MaterialData.goldIngot, 8), ClassType.ALCHEMIST, getSettings().getDowngradeCatalyst(), MaterialData.diamond));
+		// 1 diamond block -> 8 gold block
+		Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(MaterialData.goldBlock, 8), ClassType.ALCHEMIST, getSettings().getDowngradeCatalyst(), MaterialData.diamondBlock));
+		// 1 coal -> 4 charcoal
+		Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(MaterialData.charcoal, 4), ClassType.ALCHEMIST, getSettings().getDowngradeCatalyst(), MaterialData.coal));
+		
+	}
+	
+	public Settings getSettings() {
+		return settings;
 	}
 	
 	public void logMessage(Object message) {
-		getServer().getConsoleSender().sendMessage(String.valueOf(message));
+		getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[Toybox] " + String.valueOf(message));
 	}
 	
 	public void debugOutput(Object message) {
@@ -155,7 +165,7 @@ public class MainClass extends JavaPlugin {
 	}
 	
 	public void debugOutput(String message) {
-		if (debugMode)
+		if (getSettings().getDebugMode())
 			getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "[Debug] " + message);
 	}
 }

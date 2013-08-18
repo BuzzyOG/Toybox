@@ -34,11 +34,11 @@
 		<sourceDirectory>${basedir}/src/main/java/</sourceDirectory>
 		<resources>
 			<resource>
-				<targetPath>${basedir}</targetPath>
-				<directory>${basedir}/src/main/resources/config/</directory>
+			    <targetPath>${basedir}/target/classes</targetPath>
+				<directory>${basedir}/src/main/Resources/config/</directory>
 			</resource>
 			<resource>
-				<directory>${basedir}/src/main/resources/</directory>
+				<directory>${basedir}/src/main/Resources/</directory>
 			</resource>
 		</resources>
 	</build>

@@ -1,4 +1,4 @@
-package com.mctoybox.toybox.util;
+package com.mctoybox.toybox.util.holder;
 
 import com.mctoybox.toybox.classes.ClassType;
 import com.mctoybox.toybox.exceptions.NotPrimaryClassException;

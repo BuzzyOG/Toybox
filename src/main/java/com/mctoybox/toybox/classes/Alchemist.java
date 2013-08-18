@@ -12,46 +12,22 @@ import org.bukkit.potion.PotionEffectType;
 import org.getspout.spoutapi.event.screen.ScreenOpenEvent;
 import org.getspout.spoutapi.gui.ScreenType;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
-import org.getspout.spoutapi.material.Material;
 import org.getspout.spoutapi.material.MaterialData;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.mctoybox.toybox.MainClass;
 import com.mctoybox.toybox.exceptions.PlayerNotAllowedClassException;
-import com.mctoybox.toybox.util.Config;
 import com.mctoybox.toybox.util.ItemChecker;
-import com.mctoybox.toybox.util.MaterialHolder;
 import com.mctoybox.toybox.util.Message;
 import com.mctoybox.toybox.util.Permissions;
-import com.mctoybox.toybox.util.Recipes;
+import com.mctoybox.toybox.util.holder.RecipeHolder;
 
 public class Alchemist extends ClassBase {
-	Material downgradeCatalyst = MaterialData.feather;
-	Material upgradeCatalyst = MaterialData.slimeball;
-	
 	private ArrayList<PotionEffectType> helpfulPotions;
-	
-	private boolean returnCatalyst;
 	
 	public Alchemist(MainClass mainClass) {
 		super(mainClass, "Alchemist", Permissions.CLASSES_ALCHEMIST);
 		
-		downgradeCatalyst = ItemChecker.LookupItem(mainClass.getName(), mainClass.getConfig().getString(Config.ALCHEMIST_DOWNGRADE_CATALYST.toString()));
-		upgradeCatalyst = ItemChecker.LookupItem(mainClass.getName(), mainClass.getConfig().getString(Config.ALCHEMIST_UPGRADE_CATALYST.toString()));
-		
-		try {
-			// Upgrades
-			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.ironIngot), new MaterialHolder(upgradeCatalyst), new MaterialHolder(MaterialData.cobblestone, 8));
-			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.goldIngot), new MaterialHolder(upgradeCatalyst), new MaterialHolder(MaterialData.ironIngot, 8));
-			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.diamond), new MaterialHolder(upgradeCatalyst), new MaterialHolder(MaterialData.goldIngot, 4));
-			// Downgrades
-			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.cobblestone, 8), new MaterialHolder(downgradeCatalyst), new MaterialHolder(MaterialData.ironIngot));
-			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.ironIngot, 8), new MaterialHolder(downgradeCatalyst), new MaterialHolder(MaterialData.goldIngot));
-			Recipes.NewShapelessRecipe(new MaterialHolder(MaterialData.goldIngot, 4), new MaterialHolder(downgradeCatalyst), new MaterialHolder(MaterialData.diamond));
-		}
-		catch (IllegalArgumentException e) {
-			mainClass.getLogger().severe("Error registering a transmution!");
-		}
 		helpfulPotions = new ArrayList<PotionEffectType>();
 		PotionEffectType[] types = { PotionEffectType.DAMAGE_RESISTANCE, PotionEffectType.FAST_DIGGING, PotionEffectType.FIRE_RESISTANCE, PotionEffectType.INCREASE_DAMAGE,
 				PotionEffectType.INVISIBILITY, PotionEffectType.JUMP, PotionEffectType.NIGHT_VISION, PotionEffectType.REGENERATION, PotionEffectType.SPEED, PotionEffectType.WATER_BREATHING };
@@ -59,8 +35,6 @@ public class Alchemist extends ClassBase {
 		for (PotionEffectType t : types) {
 			helpfulPotions.add(t);
 		}
-		
-		returnCatalyst = mainClass.getConfig().getBoolean("classes.alchemist.returnCatalyst", false);
 	}
 	
 	@EventHandler
@@ -121,39 +95,39 @@ public class Alchemist extends ClassBase {
 		SpoutPlayer player = (SpoutPlayer) event.getWhoClicked();
 		ItemStack[] craftWindow = event.getInventory().getContents();
 		
-		boolean AlchemistRecipe = false;
-		if (ItemChecker.CraftingArrayHas(mainClass, craftWindow, this.downgradeCatalyst) || ItemChecker.CraftingArrayHas(mainClass, craftWindow, this.upgradeCatalyst)) {
-			if (ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.cobblestone, 8)
-					|| ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.ironIngot, 8)
-					|| ItemChecker.CraftingArrayHasMinAmount(mainClass, craftWindow, MaterialData.goldIngot, 4)
-					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.diamond, 1)
-					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.goldIngot, 1)
-					|| ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.ironIngot, 1)
-					|| (ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.obsidian, 4)
-							&& ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow, MaterialData.glowstoneDust, 4) && ItemChecker.CraftingArrayHasExactAmount(mainClass, craftWindow,
-							MaterialData.diamond, 1))) {
-				AlchemistRecipe = true;
-				if (!ClassType.ALCHEMIST.equals(mainClass.playerClasses.getSecondaryClass(player))) {
-					event.setCancelled(true);
-					player.closeInventory();
-					Message.sendMessage(player, Message.CLASS_ALCHEMIST_ONLY_TRANSMUTE);
-				}
-			}
+		RecipeHolder foundRecipe = ItemChecker.GetToyboxRecipe(craftWindow);
+		if (foundRecipe == null) {
+			return;
+		}
+		if (!classRef.equals(foundRecipe.getClassRestriction())) {
+			return;
 		}
 		
-		if (returnCatalyst && !event.isCancelled() && AlchemistRecipe) {
-			if (ItemChecker.CraftingArrayHas(mainClass, craftWindow, this.downgradeCatalyst)) {
-				player.getInventory().addItem(new SpoutItemStack(downgradeCatalyst, 1));
+		boolean AlchemistRecipe = true;
+		if (!classRef.equals(mainClass.playerClasses.getSecondaryClass(player))) {
+			event.setCancelled(true);
+			for (int i = 1; i < craftWindow.length; i++) {
+				player.getInventory().addItem(craftWindow[i]);
+				craftWindow[i] = null;
+			}
+			player.closeInventory();
+			Message.sendMessage(player, Message.CLASS_ALCHEMIST_ONLY_TRANSMUTE);
+		}
+		
+		// TODO fix this up properly
+		if (!event.isCancelled() && AlchemistRecipe) {
+			if (ItemChecker.CraftingArrayHas(mainClass, craftWindow, mainClass.getSettings().getDowngradeCatalyst())) {
+				player.getInventory().addItem(new SpoutItemStack(mainClass.getSettings().getDowngradeCatalyst(), 1));
 			}
 			else {
-				player.getInventory().addItem(new SpoutItemStack(upgradeCatalyst, 1));
+				player.getInventory().addItem(new SpoutItemStack(mainClass.getSettings().getUpgradeCatalyst(), 1));
 			}
 		}
 	}
 	
 	@Override
 	public void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException {
-		if (!player.hasPermission(permRequired)) {
+		if (!player.hasPermission(permRequired.getName())) {
 			throw new PlayerNotAllowedClassException();
 		}
 		

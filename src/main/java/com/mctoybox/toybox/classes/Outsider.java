@@ -15,7 +15,7 @@ public class Outsider extends ClassBase {
 	
 	@Override
 	public void assignPlayerToClass(SpoutPlayer player) throws PlayerNotAllowedClassException {
-		if (!player.hasPermission(permRequired)) {
+		if (!player.hasPermission(permRequired.getName())) {
 			throw new PlayerNotAllowedClassException();
 		}
 		

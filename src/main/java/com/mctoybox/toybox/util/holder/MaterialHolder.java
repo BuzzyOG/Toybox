@@ -1,6 +1,8 @@
-package com.mctoybox.toybox.util;
+package com.mctoybox.toybox.util.holder;
 
 import org.getspout.spoutapi.material.Material;
+
+import com.mctoybox.toybox.util.ItemChecker;
 
 public class MaterialHolder {
 	private Material material;
