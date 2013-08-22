@@ -1,5 +1,7 @@
 package com.mctoybox.toybox;
 
+import java.io.File;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.PluginManager;
@@ -32,12 +34,19 @@ public class MainClass extends JavaPlugin {
 	
 	private Settings settings;
 	
+	private String[] colours = new String[] { "White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Light Gray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black" };
+	private Material[] dyeArray = { MaterialData.inkSac, MaterialData.lapisLazuli, MaterialData.cocoaBeans, MaterialData.cyanDye, MaterialData.grayDye, MaterialData.cactusGreen,
+			MaterialData.lightBlueDye, MaterialData.lightGrayDye, MaterialData.limeDye, MaterialData.magentaDye, MaterialData.orangeDye, MaterialData.pinkDye, MaterialData.purpleDye,
+			MaterialData.roseRed, MaterialData.boneMeal, MaterialData.dandelionYellow };
+	
 	public void onEnable() {
 		saveDefaultConfig();
 		
 		settings = new Settings(this);
 		
 		classList = new ClassList(this);
+		
+		CopyResources();
 		
 		CreateBlocks();
 		CreateCommands();
@@ -55,8 +64,16 @@ public class MainClass extends JavaPlugin {
 		pm.registerEvents(new PlayerMove(this), this);
 	}
 	
+	private void CopyResources() {
+		saveResource("Resources" + File.separatorChar + "Blocks" + File.separatorChar + "Stove" + File.separatorChar + "stove_front_on.png", true);
+		for (String s : colours) {
+			saveResource("Resources" + File.separatorChar + "Blocks" + File.separatorChar + "Plaster" + File.separatorChar + "BPlaster" + s + ".png", true);
+			saveResource("Resources" + File.separatorChar + "Blocks" + File.separatorChar + "Glass" + File.separatorChar + "BGlass" + s + ".png", true);
+			saveResource("Resources" + File.separatorChar + "Items" + File.separatorChar + "ColouredBricks" + File.separatorChar + "IBrick" + s + ".png", true);
+		}
+	}
+	
 	private void CreateBlocks() {
-		String[] colours = new String[] { "White", "Orange", "Magenta", "Light Blue", "Yellow", "Lime", "Pink", "Gray", "Light Gray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black" };
 		
 		new Stove(this);
 		
@@ -97,17 +114,13 @@ public class MainClass extends JavaPlugin {
 		Recipes.NewRecipe(new RecipeHolder(ItemChecker.LookupItem(this, "Stove"), "000010000", MaterialData.cobblestone, MaterialData.glassPane));
 		
 		// All plasters
-		String[] plasterArray = { "black", "blue", "brown", "cyan", "gray", "green", "light blue", "light gray", "lime", "magenta", "orange", "pink", "purple", "red", "white", "yellow" };
-		Material[] dyeArray = { MaterialData.inkSac, MaterialData.lapisLazuli, MaterialData.cocoaBeans, MaterialData.cyanDye, MaterialData.grayDye, MaterialData.cactusGreen,
-				MaterialData.lightBlueDye, MaterialData.lightGrayDye, MaterialData.limeDye, MaterialData.magentaDye, MaterialData.orangeDye, MaterialData.pinkDye, MaterialData.purpleDye,
-				MaterialData.roseRed, MaterialData.boneMeal, MaterialData.dandelionYellow };
 		
-		for (int i = 0; i < plasterArray.length; i++) {
-			Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(plasterArray[i] + " plaster"), MaterialData.sand, MaterialData.clay, dyeArray[i]));
-			for (int j = 0; j < plasterArray.length; j++) {
+		for (int i = 0; i < colours.length; i++) {
+			Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(colours[i] + " plaster"), MaterialData.sand, MaterialData.clay, dyeArray[i]));
+			for (int j = 0; j < colours.length; j++) {
 				if (i == j)
 					continue;
-				Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(plasterArray[i] + " plaster"), new MaterialHolder(plasterArray[j] + " plaster"), new MaterialHolder(dyeArray[i])));
+				Recipes.NewRecipe(new RecipeHolder(new MaterialHolder(colours[i] + " plaster"), new MaterialHolder(colours[j] + " plaster"), new MaterialHolder(dyeArray[i])));
 			}
 		}
 		
